@@ -1,0 +1,85 @@
+你做得基本正确，不过这里有一个常见误解：你**不需要预先手动创建 `.txt` 文件**。让我们来一步一步解释你现在的问题和解决方案：
+
+---
+
+### ✅ 你说的问题是：
+
+> 我先创建了一个 txt 文件，然后用 `script` 命令保存日志，但运行 `exit` 后没有看到日志内容。
+
+#### 🔍 原因：
+
+* `script` 会**自动创建并写入指定的文件**。
+* 如果你提前手动创建了空的 `env_log.txt` 文件，有时候可能会导致权限或覆盖问题，甚至终端不会正确写入这个文件。
+* `script` 不会在终端显示日志内容，而是静默地写入到你指定的文件中。
+
+---
+
+### ✅ 正确做法（推荐重来一次）：
+
+请执行以下步骤：
+
+#### ① 删除你手动创建的旧日志文件（可选但推荐）：
+
+```bash
+rm /home/hy/logs/env_log.txt
+```
+
+#### ② 重新开始录制终端日志（此命令自动创建文件）：
+
+```bash
+script /home/hy/logs/env_log.txt
+```
+
+此时会提示：
+
+```
+Script started, file is /home/hy/logs/env_log.txt
+```
+
+然后你就可以开始执行你的所有命令，比如：
+
+```bash
+conda create -n MyEnv python=3.8
+conda activate MyEnv
+pip install open3d
+```
+
+#### ③ 完成后，输入：
+
+```bash
+exit
+```
+
+终端提示：
+
+```
+Script done, file is /home/hy/logs/env_log.txt
+```
+
+#### ④ 查看生成的日志：
+
+你可以用 VSCode 或命令行打开：
+
+```bash
+cat /home/hy/logs/env_log.txt
+```
+
+或用编辑器：
+
+```bash
+code /home/hy/logs/env_log.txt
+```
+
+---
+
+### 📌 小结：
+
+| 步骤        | 命令                                           |
+| ----------- | -------------------------------------------   |
+| 启动日志记录 | `script /home/hy/logs/env_log.txt`            |
+| 停止记录     | `exit`                                        |
+| 查看日志     | `cat /home/hy/logs/env_log.txt` 或 `code` 打开 |
+
+---
+
+如你还有错误提示或文件打不开，请复制相关信息，我来帮你排查。需要我帮你自动生成执行脚本也可以。
