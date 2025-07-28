@@ -146,4 +146,87 @@
 
 
  ## 处理流程/逻辑展示
- 
+ ### 1.创建虚拟环境
+conda create -n PointCloud_02 python=3.9  
+ ### 2.配置虚拟环境  
+screen  
+conda activate PointCloud_02  
+#安装依赖  
+pip install numpy==1.23.5 -i https://pypi.tuna.tsinghua.edu.cn/simple  
+pip install pandas==1.5.3 -i https://pypi.tuna.tsinghua.edu.cn/simple  
+pip install scikit-learn==1.2.2 -i https://pypi.tuna.tsinghua.edu.cn/simple  
+pip install laspy==2.3.0 -i https://pypi.tuna.tsinghua.edu.cn/simple  
+pip install plyfile==0.7.4 -i https://pypi.tuna.tsinghua.edu.cn/simple  
+pip install open3d==0.17.0 -i https://pypi.tuna.tsinghua.edu.cn/simple  
+pip install numpy cython  
+pip install plyfile  (使用 plyfile 正确解析二进制 PLY)  
+
+conda list  
+  
+    numpy                     1.23.5                   pypi_0    pypi
+    open3d                    0.17.0                   pypi_0    pypi
+    pandas                    1.5.3                    pypi_0    pypi
+    pip                       25.1.1             pyh8b19718_0    conda-forge
+    plyfile                   0.7.4                    pypi_0    pypi
+    python                    3.10.18         hd6af730_0_cpython    conda-forge
+    python-dateutil           2.9.0.post0              pypi_0    pypi
+    rpds-py                   0.26.0                   pypi_0    pypi
+    scikit-learn              1.2.2                    pypi_0    pypi
+    tqdm                      4.67.1                   pypi_0    pypi
+    laspy                     2.3.0                    pypi_0    pypi
+
+### 3.编译
+首先编译C++依赖模块  
+
+    cd ~/projects/PointCloud_Code/nearest_neighbors  
+    python setup.py build_ext --inplace  
+  >此目录（nearest_neighbors）下生成`grid_subsampling.cpython-39-xxx.so` 文件   
+   
+再编译cpp\_subsampling 模块  
+
+    cd ~/projects/PointCloud_Code/cpp_wrappers/cpp_subsampling  
+    g++ -O3 -Wall -shared -std=c++14 -fPIC \
+     -I$(python3 -c "import sysconfig; print(sysconfig.get_paths()['include'])") \
+     -I$(python3 -c "import numpy; print(numpy.get_include())") \
+     cpp_wrappers/cpp_subsampling/grid_subsampling/grid_subsampling.cpp \
+     cpp_wrappers/cpp_subsampling/wrapper.cpp \
+     cpp_wrappers/cpp_utils/cloud/cloud.cpp \
+     -o cpp_wrappers/cpp_subsampling/grid_subsampling.cpython-39-x86_64-linux-gnu.so  
+    ls -lh cpp_wrappers/cpp_subsampling/*.so  #验证.so文件是否生成
+  >验证结果输出：  
+  rwxrwxr-x 1 hy hy 47K Jul 28 01:16  
+  cpp_wrappers/cpp_subsampling/grid_subsampling.cpython-39-x86_64-linux-gnu. so  
+
+    python
+    >>from cpp_wrappers.cpp_subsampling import grid_subsampling
+    >>dir(grid_subsampling)  
+  >python代码中第一行对应的输出：grid_subsampling  
+   python代码中第二行对应的输出：['__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'compute']  
+
+### 4.预处理操作-->运行.py文件  
+#### 运行step0_read_las.py  
+>输入：/home/hy/projects/PointCloud_Code/Data/Data_prepare/3-4(3_4).las  
+输出：/home/hy/projects/PointCloud_Code/Results/data_prepare_result/step0_result/3-4(3_4).txt  
+（三个.las文件都分别执行了一次该.py文件，每次执行都更改对应的输入输出路径）
+
+#### 运行step1_dara_prepare_H3D.py  
+>输入：/home/hy/projects/PointCloud_Code/Results/data_prepare_result/step0_result  
+输出：/home/hy/projects/PointCloud_Code/Results/data_prepare_result/step1_H3D_result  
+（将step0的运行结果.txt文件作为这一步的输入数据）  
+（最终在step1_H3D_result 中生成了两个文件夹：kdtree-1和points-1，并且这两个文件夹中，生成了三个数据集的对应格式文件，详情可见文件结构）
+
+#### 运行Data_conversion文件夹下的ply_to_txt.py  
+>输入：/home/hy/projects/PointCloud_Code/Results/data_prepare_result/step1_H3D_result/points-1  
+（step1_data_prepare_H3D.py的运行结果中point-1文件夹中所有.ply文件）  
+输出：/home/hy/projects/PointCloud_Code/Results/data_conversion_result/H3D_points-1_ply_to_txt  （经过格式转换，转换为txt文件，并存放再输出路径下）   
+（文件转换后的txt文件作为step2_data_process_randla.py的输入）
+
+#### 运行data_prepare文件夹下的step2_data_process_randla.py  
+>输入：/home/hy/projects/PointCloud_Code/Results/data_conversion_result/H3D_points-1_ply_to_txt'  
+（将上一步转换完生成的txt文件作为输入）  
+输出：/home/hy/projects/PointCloud_Code/Results/data_prepare_result/step2_result  
+（生成的结果有处理后的特征数据.txt文件、标签文件.label文件）  
+
+
+
+
