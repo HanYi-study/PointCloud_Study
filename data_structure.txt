@@ -1,0 +1,72 @@
+POINTCLOUD_CODE/
+├── cpp_wrappers/                     # C++ 与 Python 的接口封装
+│   ├── cpp_subsampling/              # 包含 grid_subsampling 的实现
+│   │   ├── grid_subsampling/         # C++ 实现代码
+│   │   │   ├── grid_subsampling.cpp
+│   │   │   ├── grid_subsampling.h
+│   │   ├── __init__.py
+│   │   ├── setup.py
+│   ├── cpp_utils/                    # 公共 C++ 工具函数
+│   │   ├── cloud/
+│   │   │   ├── cloud.cpp
+│   │   │   └── cloud.h
+│   │   ├── nanoflann/
+│   │   │   ├── nanoflann.hpp
+│   │   └── __init__.py
+│   ├── wrapper.cpp                   # C++ 接口封装
+│   ├── grid_subsampling.cpython-39-xxx.so  # 编译生成的 so 文件
+│   └── __init__.py
+│
+├── Data/                             # 原始点云数据和转换脚本
+│   ├── Data_prepare/
+│   │   ├── 1-2(1_2).las              # 原始 .las 文件
+│   │   ├── 2-3(2_3).las
+│   │   ├── 3-4(3_4).las
+│
+├── Data_conversion/                  # PLY → TXT 转换脚本
+│   └── ply_to_txt.py
+│
+├── data_prepare/                     # 数据预处理脚本
+│   ├── step0_read_las.py
+│   ├── step1_data_prepare_H3D.py
+│   ├── step2_data_process_randla.py
+│   └── help_xxx.py 系列工具函数
+│
+├── nearest_neighbors/                # KNN 查找相关的 C++ 实现
+│   ├── knn.cpp / knn.h / knn.o
+│   ├── KDTreeTableAdaptor.h
+│   ├── setup.py                      # 编译 Python 接口
+│   ├── lib/
+│   │   └── python/                   # 编译后的 Python 模块
+│
+├── Noise_Analysis/                   # 噪声分析脚本
+│   └── KNN_Noise_points.py
+│
+├── Noise_DataAugmentation/          # 加噪脚本
+│   ├── txt_guassian_noise.py
+│   └── txt_guassian_noise_limited.py
+│
+├── Log/                              # 环境搭建和记录
+│   ├── env_create.txt
+│   └── log_using_methods.txt
+│
+├── Results/                          # 所有结果输出目录
+│   ├── data_conversion_result/
+│   │   └── H3D_points-1_ply_to_txt/
+│   │       ├── *.txt                 # PLY → TXT 转换结果
+│   ├── data_prepare_result/
+│   │   ├── step0_result/            # step0_read_las 输出
+│   │   ├── step1_H3D_result/
+│   │   │   ├── kdtree-1/
+│   │   │   ├── points-1/
+│   │   └── step2_result/            # step2_data_process_randla 输出
+│   │       ├── *.txt
+│   │       └── *.label
+│   ├── noise_analysis_result/
+│   └── noise_dataaugmentation_result/
+│
+├── Instructions.md                   # 使用说明文档
+├── Miniconda3-latest-Linux-x86_64.sh
+
+
+Updates are due 7/28/25
