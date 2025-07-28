@@ -144,7 +144,7 @@
 
  ## 文件结构说明  
 
-
+目录结构详见data_structure.txt
  ## 处理流程/逻辑展示
  ### 1.创建虚拟环境
 conda create -n PointCloud_02 python=3.9  
