@@ -1043,14 +1043,17 @@
 | utils/ply.py               | .ply 文件          | numpy 数组         | 结构化读取，字段自动识别       | 点云数据
 
 
- ## 文件结构说明  
+---
+
+
+ # 文件结构说明  
   
 目录结构详见data_structure.txt
 
- ## 处理流程/逻辑展示
- ### 1.创建虚拟环境
+ # 处理流程/逻辑展示
+ ## 1.创建虚拟环境
 conda create -n PointCloud_02 python=3.9  
- ### 2.配置虚拟环境  
+ ## 2.配置虚拟环境  
 screen  
 conda activate PointCloud_02  
 #安装依赖  
@@ -1077,7 +1080,7 @@ conda list
     tqdm                      4.67.1                   pypi_0    pypi
     laspy                     2.3.0                    pypi_0    pypi
 
-### 3.编译
+## 3.编译
 首先编译C++依赖模块  
 
     cd ~/projects/PointCloud_Code/nearest_neighbors  
@@ -1105,25 +1108,25 @@ conda list
   >python代码中第一行对应的输出：grid_subsampling  
    python代码中第二行对应的输出：['__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'compute']  
 
-### 4.预处理操作-->运行.py文件  
-#### 运行step0_read_las.py  
+## 4.预处理操作-->运行.py文件  
+### 运行step0_read_las.py  
 >输入：/home/hy/projects/PointCloud_Code/Data/Data_prepare/3-4(3_4).las  
 输出：/home/hy/projects/PointCloud_Code/Results/data_prepare_result/step0_result/3-4(3_4).txt  
 （三个.las文件都分别执行了一次该.py文件，每次执行都更改对应的输入输出路径）
 
-#### 运行step1_dara_prepare_H3D.py  
+### 运行step1_dara_prepare_H3D.py  
 >输入：/home/hy/projects/PointCloud_Code/Results/data_prepare_result/step0_result  
 输出：/home/hy/projects/PointCloud_Code/Results/data_prepare_result/step1_H3D_result  
 （将step0的运行结果.txt文件作为这一步的输入数据）  
 （最终在step1_H3D_result 中生成了两个文件夹：kdtree-1和points-1，并且这两个文件夹中，生成了三个数据集的对应格式文件，详情可见文件结构）
 
-#### 运行Data_conversion文件夹下的ply_to_txt.py  
+### 运行Data_conversion文件夹下的ply_to_txt.py  
 >输入：/home/hy/projects/PointCloud_Code/Results/data_prepare_result/step1_H3D_result/points-1  
 （step1_data_prepare_H3D.py的运行结果中point-1文件夹中所有.ply文件）  
 输出：/home/hy/projects/PointCloud_Code/Results/data_conversion_result/H3D_points-1_ply_to_txt  （经过格式转换，转换为txt文件，并存放再输出路径下）   
 （文件转换后的txt文件作为step2_data_process_randla.py的输入）
 
-#### 运行data_prepare文件夹下的step2_data_process_randla.py  
+### 运行data_prepare文件夹下的step2_data_process_randla.py  
 >输入：/home/hy/projects/PointCloud_Code/Results/data_conversion_result/H3D_points-1_ply_to_txt'  
 （将上一步转换完生成的txt文件作为输入）  
 输出：/home/hy/projects/PointCloud_Code/Results/data_prepare_result/step2_result  
