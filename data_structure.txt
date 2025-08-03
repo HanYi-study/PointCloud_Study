@@ -1,72 +1,125 @@
 POINTCLOUD_CODE/
-├── cpp_wrappers/                     # C++ 与 Python 的接口封装
-│   ├── cpp_subsampling/              # 包含 grid_subsampling 的实现
-│   │   ├── grid_subsampling/         # C++ 实现代码
-│   │   │   ├── grid_subsampling.cpp
-│   │   │   ├── grid_subsampling.h
-│   │   ├── __init__.py
-│   │   ├── setup.py
+├── cpp_wrappers/                     # C++ 与 Python 的接口封装，提供高效点云降采样和工具库
+│   ├── cpp_subsampling/              # 网格化降采样模块
+│   │   ├── grid_subsampling/         # C++ 实现代码（核心算法）
+│   │   │   ├── grid_subsampling.cpp  # 网格采样主算法
+│   │   │   ├── grid_subsampling.h    # 网格采样头文件
+│   │   ├── __init__.py               # Python 包初始化
+│   │   ├── setup.py                  # 编译配置脚本
 │   ├── cpp_utils/                    # 公共 C++ 工具函数
 │   │   ├── cloud/
-│   │   │   ├── cloud.cpp
-│   │   │   └── cloud.h
+│   │   │   ├── cloud.cpp             # 点云数据结构与操作
+│   │   │   └── cloud.h               # 点云类定义及运算
 │   │   ├── nanoflann/
-│   │   │   ├── nanoflann.hpp
-│   │   └── __init__.py
-│   ├── wrapper.cpp                   # C++ 接口封装
-│   ├── grid_subsampling.cpython-39-xxx.so  # 编译生成的 so 文件
-│   └── __init__.py
+│   │   │   ├── nanoflann.hpp         # KD-Tree 最近邻查找库
+│   │   └── __init__.py               # Python 包初始化
+│   ├── wrapper.cpp                   # C++/Python 封装接口
+│   ├── grid_subsampling.cpython-39-xxx.so  # 编译生成的 Python 扩展模块
+│   └── __init__.py                   # 包初始化
 │
 ├── Data/                             # 原始点云数据和转换脚本
-│   ├── Data_prepare/
-│   │   ├── 1-2(1_2).las              # 原始 .las 文件
+│   ├── Data_prepare/                 # 存放原始 .las 文件
+│   │   ├── 1-2(1_2).las              # 原始点云数据
 │   │   ├── 2-3(2_3).las
 │   │   ├── 3-4(3_4).las
 │
-├── Data_conversion/                  # PLY → TXT 转换脚本
-│   └── ply_to_txt.py
+├── Data_conversion/                  # 点云格式转换脚本
+│   └── ply_to_txt.py                 # PLY → TXT 转换工具
 │
 ├── data_prepare/                     # 数据预处理脚本
-│   ├── step0_read_las.py
-│   ├── step1_data_prepare_H3D.py
-│   ├── step2_data_process_randla.py
-│   └── help_xxx.py 系列工具函数
+│   ├── step0_read_las.py             # 读取 .las 文件，输出标准数组
+│   ├── step1_data_prepare_H3D.py     # H3D格式点云处理，生成PLY和KDTree
+│   ├── step1_data_prepare_V3D.py     # V3D格式点云处理，生成PLY和KDTree
+│   ├── step2_data_process_randla.py  # RandLA-Net格式预处理，插入强度列
+│   ├── help_ply.py                   # PLY文件读写工具
+│   ├── help_tool.py                  # 数据处理辅助工具
 │
-├── nearest_neighbors/                # KNN 查找相关的 C++ 实现
-│   ├── knn.cpp / knn.h / knn.o
-│   ├── KDTreeTableAdaptor.h
-│   ├── setup.py                      # 编译 Python 接口
+├── Data_process/                     # 点云数据批量处理与转换
+│   ├── txt_to_ply_with_rgb_label.py  # TXT转PLY，带RGB和标签
+│   ├── txt_to_npy.py                 # TXT批量转NPY
+│   ├── npy_to_txt.py                 # NPY批量转TXT
+│   ├── npy_to_label.py               # NPY转LABEL文件
+│   ├── txt_rgb_(float_to_int).py     # RGB浮点转整数
+│   ├── txt_insert_column.py          # 插入强度列
+│   ├── txt_divide_to_xyzrgb_labels.py# 分离XYZRGB和LABEL
+│   ├── remove_txt_commas.py          # 去除TXT行末逗号
+│   ├── ply_to_txt.py                 # PLY批量转TXT
+│   ├── combine_txt_txt_line.py       # 两TXT逐行合并
+│   ├── combine_txt_txt_file.py       # 两TXT整文件合并
+│   ├── combine_txt_labels.py         # TXT与LABEL合并
+│   ├── combine_txt_labels_single.py  # 单文件TXT与LABEL合并
+│   ├── combine_ply_ply(xyzlabel).py  # 两PLY合并为XYZLABEL
+│
+├── DBSCAN/                           # 聚类分析脚本
+│   ├── csv_DBscan_KMeans_gps.py      # GPS坐标DBSCAN聚类+KMeans中心
+│   ├── picture_DBscan_leabel.py      # 指标DBSCAN聚类并可视化
+│
+├── downsample_test/                  # 点云下采样与格式转换测试
+│   ├── ply_random_downsampling_plus.py# 多策略PLY下采样
+│   ├── ply_fps.py                    # 批量PLY最远点采样
+│   ├── ply(xyz)_to_pcd(xyz_intensity).py # PLY转PCD，添加intensity
+│   ├── ply_pcd(xyz).py               # PLY转PCD，仅XYZ
+│   ├── main.py                       # 两步法下采样（邻域+FPS）
+│   ├── help_ply.py                   # PLY文件读写工具
+│
+├── nearest_neighbors/                # KNN查找相关C++/Python实现
+│   ├── knn.cpp / knn.h / knn.o       # KNN主算法及头文件
+│   ├── KDTreeTableAdaptor.h          # KDTree适配器
+│   ├── nanoflann.hpp                 # KD-Tree库
+│   ├── knn.pyx                       # Cython接口
+│   ├── knn_.cxx / knn_.h             # C++实现与头文件
+│   ├── setup.py                      # 编译Python接口
+│   ├── test.py                       # KNN功能测试
+│   ├── __init__.py                   # 包初始化
 │   ├── lib/
-│   │   └── python/                   # 编译后的 Python 模块
+│   │   └── python/                   # 编译后的Python模块
 │
-├── Noise_Analysis/                   # 噪声分析脚本
-│   └── KNN_Noise_points.py
+├── Noise_Analysis/                   # 点云噪声分析
+│   └── KNN_Noise_points.py           # KNN噪声点提取
 │
-├── Noise_DataAugmentation/          # 加噪脚本
-│   ├── txt_guassian_noise.py
-│   └── txt_guassian_noise_limited.py
+├── Noise_DataAugmentation/           # 点云加噪增强
+│   ├── txt_guassian_noise.py         # 批量高斯噪声添加
+│   ├── txt_guassian_noise_limited.py # 边界限制高斯噪声
+│   ├── txt_guassian_noise_simple.py  # 简单高斯噪声添加
 │
-├── Log/                              # 环境搭建和记录
-│   ├── env_create.txt
-│   └── log_using_methods.txt
+├── upsample/                         # 点云上采样与可视化
+│   ├── txt_random_upsampling_plus.py # 多策略TXT上采样
+│   ├── make_ply(xyz_rgb_label).py    # 生成带RGB和标签的PLY
+│   ├── color_to_gray.py              # 彩色标签图转灰度
+│   ├── pytorch_gpu_test.py           # GPU环境检测与测试
+│   ├── __init__.py                   # 包初始化
+│   ├── utils/
+│   │   └── ply.py                    # PLY文件结构化读取
+│
+├── Calculate/                        # 点云评估与统计
+│   ├── txt_avg_columns(selected).py  # TXT指定列均值计算
+│   ├── mIoU_OA.py                    # 语义分割评估（mIoU/OA）
+│   ├── filtered_labels_number.py     # 标签统计
+│   ├── filter_evaluation_tool.py     # 滤波评估工具
+│   ├── draw_MultiState_x(frequency)_y(value).py # 多状态曲线绘制
+│   ├── Confusion_matrix_visualization.py # 混淆矩阵可视化
+│
+├── Log/                              # 环境搭建和运行日志
+│   ├── env_create.txt                # 虚拟环境创建记录
+│   ├── log_using_methods.txt         # 方法调用日志
 │
 ├── Results/                          # 所有结果输出目录
 │   ├── data_conversion_result/
-│   │   └── H3D_points-1_ply_to_txt/
-│   │       ├── *.txt                 # PLY → TXT 转换结果
+│   │   └── H3D_points-1_ply_to_txt/  # PLY转TXT结果
+│   │       ├── *.txt
 │   ├── data_prepare_result/
-│   │   ├── step0_result/            # step0_read_las 输出
+│   │   ├── step0_result/             # step0_read_las输出
 │   │   ├── step1_H3D_result/
-│   │   │   ├── kdtree-1/
-│   │   │   ├── points-1/
-│   │   └── step2_result/            # step2_data_process_randla 输出
+│   │   │   ├── kdtree-1/             # KDTree索引文件
+│   │   │   ├── points-1/             # PLY点云文件
+│   │   └── step2_result/             # RandLA-Net预处理结果
 │   │       ├── *.txt
 │   │       └── *.label
-│   ├── noise_analysis_result/
-│   └── noise_dataaugmentation_result/
+│   ├── noise_analysis_result/        # 噪声分析结果
+│   └── noise_dataaugmentation_result/# 加噪结果
 │
 ├── Instructions.md                   # 使用说明文档
-├── Miniconda3-latest-Linux-x86_64.sh
+├── Miniconda3-latest-Linux-x86_64.sh # Miniconda安装脚本
 
 
-Updates are due 7/28/25
+Updated until August 3, 2025
