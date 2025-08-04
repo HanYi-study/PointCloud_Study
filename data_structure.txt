@@ -120,6 +120,7 @@ POINTCLOUD_CODE/
 │
 ├── Instructions.md                   # 使用说明文档
 ├── Miniconda3-latest-Linux-x86_64.sh # Miniconda安装脚本
+├── Outline_of_Point_Cloud_Semantic_Segmentation_Process.md  #点云语义分割流程图及知识点补充
 
 
 Updated until August 3, 2025
