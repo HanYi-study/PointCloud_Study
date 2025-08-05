@@ -2,6 +2,30 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
+'''
+混淆矩阵（Confusion Matrix）是用于评估分类模型性能的矩阵，反映模型预测标签与真实标签的对应关系。
+矩阵结构中：行（Y轴）代表真实标签（ground truth） / 列（X轴）代表模型预测标签（prediction）
+         预测类别
+        A   B   C
+真实 A [20,  3,  2]
+     B [ 4, 30,  1]
+     C [ 1,  2, 25]
+[0][0]=20：表示真实为 A 且预测为 A 的样本数（真正类 True Positive）
+[0][1]=3：真实为 A 但预测为 B 的样本数（误分类）
+[1][0]=4：真实为 B 但预测为 A 的样本数
+每一个数值： 表示某一类真实标签被预测为另一类的样本数，是对分类正确性和混淆程度的直观刻画。
+
+py文件的作用：
+该脚本是一个“混淆矩阵可视化工具”，其核心功能是将已有的混淆矩阵数据（.txt 或 .csv）读取出来
+绘制为彩色图像（heatmap），可视化模型在每一类上的分类准确性与混淆情况。
+
+混淆矩阵如何生成的？
+混淆矩阵通常是模型评估时生成的
+例如使用 sklearn 的 confusion_matrix(y_true, y_pred) / 或自己构建二维数组 [真实标签][预测标签] += 1
+
+'''
+
+
 # 设置中文字体
 plt.rcParams['font.sans-serif'] = ['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
