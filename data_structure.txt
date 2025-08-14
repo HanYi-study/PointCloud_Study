@@ -118,6 +118,16 @@ POINTCLOUD_CODE/
 │   ├── noise_analysis_result/        # 噪声分析结果
 │   └── noise_dataaugmentation_result/# 加噪结果
 │
+├── DeNoising/
+│   ├── DBSCAN_denoising.py           # 保留最大连通分量的聚类去噪
+│   ├── DeNoising_plus.py             # 综合6种去噪策略的集成方案
+│   ├── gaussian_filter_denoising.py  # 用高斯核对点云数据进行平滑
+│   ├── Knn_smooth.py                 # 将点的位置替换为最邻近k个点的平均值
+│   ├── MLS_denoising.py              # 在点邻域内构建拟合曲面，将点投影到曲面上
+│   ├── Radius_Outlier_Removal.py     # 半径离群去噪，若点的邻居数量少于min，视为离群点去除
+│   └── Statistical_Outlier_Removal.py# 统计离群点去噪，若点与其他邻居们之间的距离的均值大于min（所有距离均值+所有距离标准差×系数），视为噪声点去除
+│
+│
 ├── Instructions.md                   # 使用说明文档
 ├── Miniconda3-latest-Linux-x86_64.sh # Miniconda安装脚本
 ├── Outline_of_Point_Cloud_Semantic_Segmentation_Process.md  #点云语义分割流程图及知识点补充
